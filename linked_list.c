@@ -61,11 +61,27 @@ int modify(struct node** head, int new_value, int position) {
 int delete_node(struct node** head, int position) {
     struct node* next_address;
     struct node* cursor = *head;
+    if(position == 0) {
+        if(cursor->next == NULL) {
+            free(*head);
+            *head = NULL;
+            return 0;
+        }
+        next_address = cursor->next;
+        free(*head);
+        *head = next_address;
+        return 0;
+    }
     for(int i = 0; i != position-1; i++) {
         if(cursor->next == NULL) {
             return 1;
         }
         cursor=cursor->next;
+    }
+    if(cursor->next->next == NULL) {
+        free(cursor->next);
+        cursor->next = NULL;
+        return 0;
     }
     next_address = cursor->next->next;
     free(cursor->next);
