@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "array.h"
 #include "linked_list.h"
 
 int main() {
