@@ -8,8 +8,14 @@ bool is_empty(struct node* head) {
 }
 
 void allocate(struct node** head, int size) {
+    if(size <= 0) {
+        return;
+    }
+
     if(*head == NULL) {
         *head = malloc(sizeof(**head));
+        (*head)->value = 0;
+        (*head)->next = NULL;
     }
 
     for(int i = 0; i != size-1; i++) {
@@ -25,18 +31,14 @@ void allocate(struct node** head, int size) {
     }
 }
 
-int deallocate(struct node** head, int size) {
+void deallocate(struct node** head, int size) {
     for(int i=0; i != size; i++) {
-        if(*head == NULL) {
-            return 1;
-        }
-
         if((*head)->next == NULL) {
             free(*head);
             *head = NULL;
-            return 0;
+            return;
         }
-
+    
         struct node* cursor = *head;
         while(cursor->next->next != NULL) {
             cursor=cursor->next;
@@ -46,47 +48,47 @@ int deallocate(struct node** head, int size) {
     }
 }
 
-int modify(struct node** head, int new_value, int position) {
+void modify(struct node** head, int new_value, int position) {
     struct node* cursor = *head;
     for(int i = 0; i != position; i++) {
         if(cursor->next == NULL) {
-            return 1;
+            return;
         }
         cursor=cursor->next;
     }
     cursor->value = new_value;
-    return 0;
 }
 
-int delete_node(struct node** head, int position) {
+void delete_node(struct node** head, int position) {
     struct node* next_address;
     struct node* cursor = *head;
     if(position == 0) {
         if(cursor->next == NULL) {
             free(*head);
             *head = NULL;
-            return 0;
+            return;
         }
         next_address = cursor->next;
         free(*head);
         *head = next_address;
-        return 0;
+        return;
     }
+
     for(int i = 0; i != position-1; i++) {
         if(cursor->next == NULL) {
-            return 1;
+            return;
         }
         cursor=cursor->next;
     }
+
     if(cursor->next->next == NULL) {
         free(cursor->next);
         cursor->next = NULL;
-        return 0;
+        return;
     }
     next_address = cursor->next->next;
     free(cursor->next);
     cursor->next = next_address;
-    return 0;
 }
 
 void destroy(struct node** head) {
@@ -106,6 +108,14 @@ void destroy(struct node** head) {
     }
 }
 
+void iterate(struct node* head) {
+    int i = 0;
+    for(struct node* cursor = head; cursor != NULL; cursor=cursor->next) {
+        printf("#%d: %d\n", i, cursor->value);
+        i++;
+    }
+}
+
 int length(struct node* head) {
     int length = 0;
     for(struct node* cursor = head; cursor != NULL; cursor=cursor->next) {
@@ -122,12 +132,4 @@ int search(struct node* head, int searched_value) {
         }
     }
     return amount;
-}
-
-void iterate(struct node* head) {
-    int i = 0;
-    for(struct node* cursor = head; cursor != NULL; cursor=cursor->next) {
-        printf("#%d: %d\n", i, cursor->value);
-        i++;
-    }
 }
