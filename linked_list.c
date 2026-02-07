@@ -12,13 +12,13 @@ void allocate(struct node** head, int size) {
         return;
     }
 
-    for(int i = 0; i != size; i++) {
-        if(*head == NULL) {
-            *head = malloc(sizeof(**head));
-            (*head)->value = 0;
-            (*head)->next = NULL;
-            continue;
-        }
+    if(*head == NULL) {
+        *head = malloc(sizeof(**head));
+        (*head)->value = 0;
+        (*head)->next = NULL;
+    }
+
+    for(int i = 0; i != size-1; i++) {
         struct node* new_node = malloc(sizeof(*new_node));
         new_node->value = 0;
         new_node->next = NULL;
