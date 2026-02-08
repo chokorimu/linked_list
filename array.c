@@ -11,6 +11,15 @@ void initArray(DynamicArray *a, int cap) {
 }
 
 // ============================================================
+// [ ARRAY ] - ITERATE
+// ============================================================
+void iterateArray(DynamicArray *a) {
+    for(int i =0;i<a->size;i++){
+        printf("elemen array : %d\n",a->data[i]);
+    }
+}
+
+// ============================================================
 // [ ARRAY ] - ISEMPTY
 // ============================================================
 bool isEmptyArray(DynamicArray *a) {

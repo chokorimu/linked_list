@@ -14,6 +14,7 @@ typedef struct {
 
 // Daftar Fungsi (Prototipe)
 void initArray(DynamicArray *a, int cap);
+void iterateArray(DynamicArray *a);
 bool isEmptyArray(DynamicArray *a);
 void addArray(DynamicArray *a, int val);
 int searchArray(DynamicArray *a, int target);
