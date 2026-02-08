@@ -1,3 +1,2 @@
-compile and run:
-- (Windows) gcc main.c array.c linked_list.c -o main.exe; .\main.exe
-- (Linux) gcc main.c array.c linked_list.c -o main && ./main
+# ADT-Task
+ADT ( Abstract Data Type ) -> Structure Data Task

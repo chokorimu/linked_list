@@ -1,35 +1,30 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
 #include "linked_list.h"
-
-void allocate(struct node** head, int size) {
-    if(size <= 0) {
-        return;
-    }
-    
-    for(int i = 0; i != size; i++) {
-        if(*head == NULL) {
-            *head = malloc(sizeof(**head));
-            (*head)->value = 0;
-            (*head)->is_node_empty = true;
-            (*head)->next = NULL;
-            continue;
-        }
-        struct node* new_node = malloc(sizeof(*new_node));
-        new_node->value = 0;
-        new_node->is_node_empty = true;
-        new_node->next = NULL;
-        
-        struct node* cursor = *head;
-        while(cursor->next != NULL) {
-            cursor=cursor->next;
-        }
-        cursor->next = new_node;
-    }
-}
 
 bool is_empty(struct node* head) {
     return (head == NULL);
 }
 
+void allocate(struct node** head, int size) {
+    if(size <= 0) return;
+
+    for(int i = 0; i < size; i++) {
+        struct node* new_node = malloc(sizeof(struct node));
+        new_node->value = 0;
+        new_node->is_node_empty = true; // Tandai kosong di awal
+        new_node->next = NULL;
+
+        if(*head == NULL) {
+            *head = new_node;
+        } else {
+            struct node* cursor = *head;
+            while(cursor->next != NULL) cursor = cursor->next;
+            cursor->next = new_node;
+        }
+    }
+}
 void deallocate(struct node** head, int size) {
     for(int i=0; i != size; i++) {
         if((*head)->next == NULL) {
@@ -47,57 +42,41 @@ void deallocate(struct node** head, int size) {
     }
 }
 
-int length(struct node** head) {
-    int length = 0;
-    for(struct node* cursor = *head; cursor != NULL; cursor=cursor->next) {
-        if(cursor->is_node_empty == false) {
-        length++;
-        }
-    }
-    return length;
-}
 
 void insert(struct node** head, int new_value, int position) {
     struct node* cursor = *head;
-    if(position == 0) {
-        if((*head)->is_node_empty == false) {
-            struct node* new_node = malloc(sizeof(*new_node));
-            new_node->value = new_value;
-            new_node->is_node_empty = false;
-            new_node->next = *head;
-            *head = new_node;
-            return;
-        }
-        (*head)->value = new_value;
-        (*head)->is_node_empty = false;
-        return;
+
+    // 1. Cari node di posisi yang dituju
+    for(int i = 0; i != position; i++) {
+        if(cursor->next == NULL) return; // Berhenti jika list tidak sepanjang itu
+        cursor = cursor->next;
     }
 
-    for(int i = 0; i < position-1; i++) {
-        if(cursor == NULL || cursor->next == NULL) {
-            return;
+    // 2. Jika node tersebut kosong, tinggal isi (Logika Overwrite)
+    if(cursor->is_node_empty == true) {
+        cursor->value = new_value;
+        cursor->is_node_empty = false;
+    } 
+    // 3. JIKA SUDAH ADA ISINYA, MAKA GESER (Logika Shift/Oper Nilai)
+    else {
+        int value_yang_dioper = cursor->value; // Amankan nilai lama
+        cursor->value = new_value;            // Masukkan nilai baru
+        
+        // Oper semua nilai ke kanan sampai ujung
+        while(cursor->next != NULL) {
+            cursor = cursor->next;
+            
+            int cadangan = cursor->value;    // Amankan nilai di node ini
+            cursor->value = value_yang_dioper; // Isi dengan nilai kiriman dari kiri
+            cursor->is_node_empty = false;   // Tandai sudah berisi
+            
+            value_yang_dioper = cadangan;    // Nilai cadangan siap dioper lagi
         }
-        else if(cursor->next->is_node_empty) {
-            break;
-        }
-        cursor=cursor->next;
     }
-
-    if(cursor->next->is_node_empty == false) {
-        struct node* new_node = malloc(sizeof(*new_node));
-        new_node->value = new_value;
-        new_node->is_node_empty = false;
-        new_node->next = cursor->next;
-
-        cursor->next = new_node;
-        return;
-    }
-    cursor->next->value = new_value;
-    cursor->next->is_node_empty = false;
 }
 
 void delete_node(struct node** head, int position) {
-    struct node* next_node;
+    struct node* next_address;
     struct node* cursor = *head;
     if(position == 0) {
         if(cursor->next == NULL) {
@@ -105,9 +84,9 @@ void delete_node(struct node** head, int position) {
             *head = NULL;
             return;
         }
-        next_node = cursor->next;
+        next_address = cursor->next;
         free(*head);
-        *head = next_node;
+        *head = next_address;
         return;
     }
 
@@ -123,9 +102,9 @@ void delete_node(struct node** head, int position) {
         cursor->next = NULL;
         return;
     }
-    next_node = cursor->next->next;
+    next_address = cursor->next->next;
     free(cursor->next);
-    cursor->next = next_node;
+    cursor->next = next_address;
 }
 
 void destroy(struct node** head) {
@@ -145,17 +124,29 @@ void destroy(struct node** head) {
     }
 }
 
-void iterate(struct node** head) {
+void iterate(struct node* head) {
     int i = 0;
-    for(struct node* cursor = *head; cursor != NULL; cursor=cursor->next) {
+    for(struct node* cursor = head; cursor != NULL; cursor=cursor->next) {
         printf("#%d: %d\n", i, cursor->value);
         i++;
     }
 }
 
-int search(struct node** head, int searched_value) {
+int length(struct node* head) { // Gunakan struct node* bukan struct node**
+    int len = 0;
+    struct node* cursor = head;
+    while(cursor != NULL) {
+        if(cursor->is_node_empty == false) {
+            len++;
+        }
+        cursor = cursor->next;
+    }
+    return len;
+}
+
+int search(struct node* head, int searched_value) {
     int amount = 0;
-    for(struct node* cursor = *head; cursor != NULL; cursor=cursor->next) {
+    for(struct node* cursor = head; cursor != NULL; cursor=cursor->next) {
         if(cursor->value == searched_value) {
             amount++;
         }
