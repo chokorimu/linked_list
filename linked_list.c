@@ -151,13 +151,18 @@ void destroy(struct node** head) {
 }
 
 void iterate(struct node** head) {
+    struct node* cursor = *head;
     if (*head == NULL) {
         return;
     }
     int i = 0;
-    for(struct node* cursor = *head; cursor->is_node_empty != true; cursor=cursor->next) {
+    while (cursor != NULL) {
+        if (cursor->is_node_empty == true) {
+            break;
+        }
         printf("#%d: %d\n", i, cursor->value);
         i++;
+        cursor = cursor->next;
     }
 }
 
