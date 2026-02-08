@@ -58,26 +58,42 @@ int length(struct node** head) {
 }
 
 void insert(struct node** head, int new_value, int position) {
-    struct node* next_node;
     struct node* cursor = *head;
-    for(int i = 0; i != position; i++) {
-        if(cursor->is_node_empty == true) {
-            break;
-        }
-        else if(cursor->next == NULL) {
+    if(position == 0) {
+        if((*head)->is_node_empty == false) {
+            struct node* new_node = malloc(sizeof(*new_node));
+            new_node->value = new_value;
+            new_node->is_node_empty = false;
+            new_node->next = *head;
+            *head = new_node;
             return;
+        }
+        (*head)->value = new_value;
+        (*head)->is_node_empty = false;
+        return;
+    }
+
+    for(int i = 0; i < position-1; i++) {
+        if(cursor == NULL || cursor->next == NULL) {
+            return;
+        }
+        else if(cursor->next->is_node_empty) {
+            break;
         }
         cursor=cursor->next;
     }
 
-    if(cursor->is_node_empty == false) {
-        next_node = cursor->next;
-        allocate(head, 1);
-        cursor->next->next = next_node;
-        deallocate(head,1);
+    if(cursor->next->is_node_empty == false) {
+        struct node* new_node = malloc(sizeof(*new_node));
+        new_node->value = new_value;
+        new_node->is_node_empty = false;
+        new_node->next = cursor->next;
+
+        cursor->next = new_node;
+        return;
     }
-    cursor->value = new_value;
-    cursor->is_node_empty = false;
+    cursor->next->value = new_value;
+    cursor->next->is_node_empty = false;
 }
 
 void delete_node(struct node** head, int position) {
