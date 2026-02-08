@@ -1,34 +1,31 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
 #include "linked_list.h"
-
-bool is_empty(struct node* head) {
-    return (head == NULL);
-}
 
 void allocate(struct node** head, int size) {
     if(size <= 0) {
         return;
     }
-
+    
     for(int i = 0; i != size; i++) {
-    if(*head == NULL) {
-        *head = malloc(sizeof(**head));
-        (*head)->value = 0;
-        (*head)->next = NULL;
+        if(*head == NULL) {
+            *head = malloc(sizeof(**head));
+            (*head)->value = 0;
+            (*head)->next = NULL;
             continue;
-    }
+        }
         struct node* new_node = malloc(sizeof(*new_node));
         new_node->value = 0;
         new_node->next = NULL;
-
+        
         struct node* cursor = *head;
         while(cursor->next != NULL) {
             cursor=cursor->next;
         }
         cursor->next = new_node;
     }
+}
+
+bool is_empty(struct node* head) {
+    return (head == NULL);
 }
 
 void deallocate(struct node** head, int size) {

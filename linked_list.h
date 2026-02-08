@@ -1,13 +1,17 @@
 #ifndef LINKED_LIST_H
 #define LINKED_LIST_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
 struct node {
     int value;
     struct node* next;
 };
 
-bool is_empty(struct node* head);
 void allocate(struct node** head, int size);
+bool is_empty(struct node* head);
 void deallocate(struct node** head, int size);
 void modify(struct node** head, int new_value, int position);
 void delete_node(struct node** head, int position);
