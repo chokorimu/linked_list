@@ -1,32 +1,37 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
 #include "linked_list.h"
+
+void allocate(struct node** head, int size) {
+    if(size <= 0) {
+        return;
+    }
+    
+    for(int i = 0; i < size; i++) {
+        if(*head == NULL) {
+            *head = malloc(sizeof(**head));
+            (*head)->value = 0;
+            (*head)->is_node_empty = true;
+            (*head)->next = NULL;
+            continue;
+        }
+        struct node* new_node = malloc(sizeof(*new_node));
+        new_node->value = 0;
+        new_node->is_node_empty = true;
+        new_node->next = NULL;
+        
+        struct node* cursor = *head;
+        while(cursor->next != NULL) {
+            cursor=cursor->next;
+        }
+        cursor->next = new_node;
+    }
+}
 
 bool is_empty(struct node* head) {
     return (head == NULL);
 }
 
-void allocate(struct node** head, int size) {
-    if(size <= 0) return;
-
-    for(int i = 0; i < size; i++) {
-        struct node* new_node = malloc(sizeof(struct node));
-        new_node->value = 0;
-        new_node->is_node_empty = true; // Tandai kosong di awal
-        new_node->next = NULL;
-
-        if(*head == NULL) {
-            *head = new_node;
-        } else {
-            struct node* cursor = *head;
-            while(cursor->next != NULL) cursor = cursor->next;
-            cursor->next = new_node;
-        }
-    }
-}
 void deallocate(struct node** head, int size) {
-    for(int i=0; i != size; i++) {
+    for(int i=0; i < size; i++) {
         if((*head)->next == NULL) {
             free(*head);
             *head = NULL;
@@ -40,6 +45,16 @@ void deallocate(struct node** head, int size) {
         free(cursor->next);
         cursor->next = NULL;
     }
+}
+
+int length(struct node** head) {
+    int length = 0;
+    for(struct node* cursor = *head; cursor != NULL; cursor=cursor->next) {
+        if(cursor->is_node_empty == false) {
+        length++;
+        }
+    }
+    return length;
 }
 
 
@@ -76,7 +91,7 @@ void insert(struct node** head, int new_value, int position) {
 }
 
 void delete_node(struct node** head, int position) {
-    struct node* next_address;
+    struct node* next_node;
     struct node* cursor = *head;
     if(position == 0) {
         if(cursor->next == NULL) {
@@ -84,13 +99,13 @@ void delete_node(struct node** head, int position) {
             *head = NULL;
             return;
         }
-        next_address = cursor->next;
+        next_node = cursor->next;
         free(*head);
-        *head = next_address;
+        *head = next_node;
         return;
     }
 
-    for(int i = 0; i != position-1; i++) {
+    for(int i = 0; i < position-1; i++) {
         if(cursor->next == NULL) {
             return;
         }
@@ -102,9 +117,9 @@ void delete_node(struct node** head, int position) {
         cursor->next = NULL;
         return;
     }
-    next_address = cursor->next->next;
+    next_node = cursor->next->next;
     free(cursor->next);
-    cursor->next = next_address;
+    cursor->next = next_node;
 }
 
 void destroy(struct node** head) {
@@ -124,29 +139,17 @@ void destroy(struct node** head) {
     }
 }
 
-void iterate(struct node* head) {
+void iterate(struct node** head) {
     int i = 0;
-    for(struct node* cursor = head; cursor != NULL; cursor=cursor->next) {
+    for(struct node* cursor = *head; cursor != NULL; cursor=cursor->next) {
         printf("#%d: %d\n", i, cursor->value);
         i++;
     }
 }
 
-int length(struct node* head) { // Gunakan struct node* bukan struct node**
-    int len = 0;
-    struct node* cursor = head;
-    while(cursor != NULL) {
-        if(cursor->is_node_empty == false) {
-            len++;
-        }
-        cursor = cursor->next;
-    }
-    return len;
-}
-
-int search(struct node* head, int searched_value) {
+int search(struct node** head, int searched_value) {
     int amount = 0;
-    for(struct node* cursor = head; cursor != NULL; cursor=cursor->next) {
+    for(struct node* cursor = *head; cursor != NULL; cursor=cursor->next) {
         if(cursor->value == searched_value) {
             amount++;
         }
