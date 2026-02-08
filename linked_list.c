@@ -5,7 +5,7 @@ void allocate(struct node** head, int size) {
         return;
     }
     
-    for(int i = 0; i != size; i++) {
+    for(int i = 0; i < size; i++) {
         if(*head == NULL) {
             *head = malloc(sizeof(**head));
             (*head)->value = 0;
@@ -31,7 +31,7 @@ bool is_empty(struct node* head) {
 }
 
 void deallocate(struct node** head, int size) {
-    for(int i=0; i != size; i++) {
+    for(int i=0; i < size; i++) {
         if((*head)->next == NULL) {
             free(*head);
             *head = NULL;
@@ -77,6 +77,11 @@ void insert(struct node** head, int new_value, int position) {
         if(cursor == NULL || cursor->next == NULL) {
             return;
         }
+        else if(cursor->is_node_empty) {
+            cursor->value = new_value;
+            cursor->is_node_empty = false;
+            return;
+        }
         else if(cursor->next->is_node_empty) {
             break;
         }
@@ -111,7 +116,7 @@ void delete_node(struct node** head, int position) {
         return;
     }
 
-    for(int i = 0; i != position-1; i++) {
+    for(int i = 0; i < position-1; i++) {
         if(cursor->next == NULL) {
             return;
         }
