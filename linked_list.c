@@ -26,8 +26,8 @@ void allocate(struct node** head, int size) {
     }
 }
 
-bool is_empty(struct node* head) {
-    return (head == NULL);
+bool is_empty(struct node** head) {
+    return (length(head) == 0);
 }
 
 void deallocate(struct node** head, int size) {

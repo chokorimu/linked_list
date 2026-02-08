@@ -12,7 +12,7 @@ struct node {
 };
 
 void allocate(struct node** head, int size);
-bool is_empty(struct node* head);
+bool is_empty(struct node** head);
 void deallocate(struct node** head, int size);
 void insert(struct node** head, int new_value, int position);
 void delete_node(struct node** head, int position);
