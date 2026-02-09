@@ -5,6 +5,7 @@
 int main() {
     struct node* head = NULL;
     DynamicArray arr;
-    
+    // insert functions below:
+
     return 0;
 }
